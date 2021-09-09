@@ -1,0 +1,191 @@
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `sigconf')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%%
+%% The first command in your LaTeX source must be the \documentclass command.
+
+
+
+
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\usepackage{xcolor}
+% \usepackage[numbers]{natbib}
+% \usepackage{notoccite}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% COMMENT THIS BLOCK FOR INCLUDING ACM COPYRIGHTS
+%%% ----------- Start ---------------
+\settopmatter{printacmref=false} % Removes citation information below abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+% \pagestyle{plain} % removes running headers
+%%% ----------- End ---------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+% \AtBeginDocument{%
+%   \providecommand\BibTeX{{%
+%     \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+% \setcopyright{none}
+\setcopyright{acmcopyright}
+\copyrightyear{2021}
+\acmYear{2021}
+\acmDOI{000.000}
+
+% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[ISFPGA '21]{ISFPGA '21: ACM Symposium NAME}{DATE}{VENUE}
+\acmBooktitle{BookNAME}
+\acmPrice{Price}
+\acmISBN{000.000.000.000}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+% \acmSubmissionID{123-A56-BU3}
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+% \citestyle{acmauthoryear}
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title[short title]{MINI: FPGA based Metastability Induced Neural Network Implementation}
+
+\author{Sayyed Jaffar Ali Raza}
+\affiliation{%
+  \institution{University of Central Florida}
+  \country{}
+}
+\email{jaffar@knights.ucf.edu}
+
+\author{Mingjie Lin}
+\affiliation{%
+  \institution{University of Central Florida}
+  \country{}
+}
+\email{milin@ucf.edu}
+
+\begin{abstract} \label{abstract}
+Artificial neural networks (ANN) have proven to closely reflect behavior of a human brain, allowing the learning systems to cognitively adapt to the problems so it can learn and model non-linear and complex relationships between input stimuli and output. This end-to-end learning capability is proven to solve common problems in the fields of artificial intelligence (AI), machine learning, and deep learning. In addition to high energy requirements during training, standard ANN implementation also require high-density (fully-connected) connections and data bandwidth between each node to attain abundant logic components to carry out algebraic transformations during training phase. These requirements can be easily satisfied when training a model on tethered systems with abundant memory and compute resources, however, such requirements become a fundamental bottleneck when training ANNs on untethered, limited-resource platforms like FPGAs. Despite improvements in FPGA densities, the numerous algebraic operations at each neural synapse limit the size of network that can be trained on a standalone FPGA, thus making ANN applications less viable to be realized on small FPGA chips. We propose an implementation that is aimed at reducing high-connectivity requirements within nodes without much compromise on learning abilities of ANN. We use sparsely wired network structure and prove its equivalence to a fully connected structure. We achieve this by exploiting parallel architecture of FPGA hardware that can reconfigure the synapse/node wiring in real-time, based on input stimuli. The sparse connections between nodes are inferred from a metastable circuit. The \textbf{M}etastable circuit \textbf{I}nduces its readout stream to form sparse \textbf{N}eural network assigning probabilistic weights to each neuron connection, and the \textbf{I}mplementation is fine-tuned over time such that metastable readouts exhibit properties as of a probability density function (PDF) of model being trained --- hence we name our method \textbf{MINI}. We implemented MINI using Xilinx FPGA ``XC7A35T-1CPG236C'', and our results present successful execution of Q-learning algorithm with \color{blue}X times \color{black} reduced energy and resource consumption.
+\end{abstract}
+
+\keywords{Metastablilty, Neural networks, Hardware based Q-learning, Machine learning}
+
+\maketitle
+
+\section{Introduction} \label{intro}
+\color{red}\underline{Importance of ANNs:} \color{black}
+Developing learning mechanisms to equip machines with reasoning and decision-making capabilities has become a widespread research pursuit. Inspired by the sophisticated functionality of a human brains, almost all machine learning techniques use a simplified, yet identical architecture of a brain that simulate an artificial neural network (ANN) on silicon. Each artificial neuron unit in ANN represent an algebraic function, and is interconnected with other neurons, forming a mesh or network of functions \cite{ANN-Paper}. Behavior of a single neuron can be expressed as a mathematical function where each input is separately weighted and the sum is passed through a non-linear (activation) function \cite{multiplier-less-RL, multiplier-less}. The learning mechanism involves adjustments to the weights of the interconnects based on the input patterns. Neuron cells can be seen as sophisticated logic blocks that can evolve over time to perform various operations on incoming stimuli; collectively, forming a network that can exhibit accurate behaviors of real-world systems by learning from examples \cite{ANN-Paper}. 
+
+\color{red}\underline{Why FPGAs are suitable for ANNs:} \color{black}
+In general, ANN implementation demands large resources during training phase because of maintaining non-linear activation functions and numerous multipliers per neuron within the network. So beside CPUs and GPUs, FPGAs are becoming a natural choice to model efficient ANNs, as FPGAs can handle various computing operations, logic, and memory resources in the single device, which preserves the parallel architecture of neurons and can be reconfigured as well. Additionally, FPGA consume less power, which gives it advantage of lower energy requirements when compared to a CPU and GPU \cite{FPGA-power}, thus opening up possibilities of deploying ANNs in problems where meeting speed or energy constraints is required.
+
+\color{red}\underline{Problem of classic ANN on FPGA:} \color{black}
+Extensive research has been carried out to model ANNs digitally. Although, majority of such studies are constituted around CPU or GPU based software implementation of ANNs; much fewer studies involved hardware ANN designs until recently \cite{Hardware-NN-nature-2021}. It is due to the fact that, the size and complexity of ANN is directly proportional to both, the total number of neurons, and the number of layers in the neural network. Thus for large-scale problems, scaling of ANN would require higher density connections and more algebraic multiplier blocks on hardware. Researchers in \cite{improve-NN-on-FPGA-with-LUT} suggest to use Lookup tables (LUTs) to store activation functions in order to maintain speed and reduced multiplier requirements with a trade-off of higher LUT resources. Additionally, studies in \cite{FPGA-NN-improve-reduce-mem} and \cite{improve-VHDL-mem} propose usage of dynamically adaptive memory blocks to reduce static memory allocation. Similarly, authors in \cite{flexible-NN} have demonstrated ANN implementation with only 8 neurons on Xilinx FPGA coupled with $1KB\times 8$ erasable programmable read-only memory (EPROM) blocks for control of inverted pendulum problem. However, even with tremendous improvements in FPGA densities and logic cores, the numerous algebraic operations at each neural synapse, and highly redundant interconnection requirements limit the size of network that can be trained on a standalone FPGA, thus making ANN applications less viable to be realized on small FPGA chips. Therefore, achieving a generalized model of ANN on hardware fabric remains hot area in the research community.
+
+\color{red}\underline{Proposal:} \color{black}
+In this paper, we aim to present ANN implementation for FPGA platform that does not require high-density (fully-connected) interconnects or excessively high LUT occupancy. Instead, an artificial neural network is established with stochastically connected neurons using only sparse interconnects, unlike dense interconnects in a fully-connected structure. Our implementation relaxes growth proportion of interconnects w.r.t size of network, along with reduced energy values. Thus allowing ANN models to fit on single chip FPGA devices with reduced compute overhead. Technically, the core idea can be described into two-folds; first, establishing a methodology that recommends stochastic network connections yielding to sparse interconnects; and second, a theoretical confidence to justify equivalence of a randomly connected network structure with densely connected network structure.
+
+We unfold the first statement by introducing concept of \textit{metastability} in hardware. Metastability can be simply defined as a phenomenon that can cause a signal to exhibit probabilistic behavior in asynchronous time domain \cite{meta-def}. Metastable behavior is commonly seen as unwanted property, as it creates arbitrary outputs. On the other hand, it can be seen as a high-entropy timing violation circuit, generating stochastic outcomes in time domain. Usage of metastabiltiy has been reported to generate random bits in \cite{meta-trng}, \cite{meta-3}, and \cite{meta-2} by establishing programmable delay lines (PDLs) that can perturb signal propagation distance in the circuitry. Inspired by those techniques, we develop a hierarchical timing-violation based FPGA circuit by instantiating PDLs, and perturbing their propagation distance dynamically on a temporal scale. The perturbation in distance defines entropy of the output signal. The output signal can be observed as a stochastic probability distribution function (PDF). This PDF is utilized for reconfiguring the network connections and determining weights of the interconnect. During training, the circuit is fine-tuned by end-to-end regression (closed-loop feedback) until entropy is minimized and an optimal PDF is achieved.
+
+The second statement is addressed by showing that a randomly connected weighted network can be approximated equivalent to densely connected linear network. The equivalence can be observed in strict conformance with the Stone-Weierstrass theorem, which enables uniform approximation of a continuous (random) function defined on a Hausdorff space $[a, b]$, as closely as desired, by a polynomial interpolation to near linear function \cite{stone-theorm-for-NN, neural-stone}. This similar approximation method is also used for establishing proof of a Liquid State Machine (LSM) that exhibits comparable properties (ex. sparse connections, fewer readouts etc.) to our proposed system to a limited extent \cite{lsm}. Additionally, we leverage upon studies carried out in \cite{3-layer-NNs-universal}, which emphasize that, provided sufficient number of neurons at hidden layer, a three-layer NN with sigmoid function in hidden layer and a linear function on output layer can virtually approximate any non-linear transformations \cite{3-layer-NNs-universal, nn-uvfa}. 
+
+To summarize, the \textbf{M}etastable circuit \textbf{I}nduces its readout stream to form sparse \textbf{N}eural network assigning probabilistic weights to each neuron connection, and the \textbf{I}mplementation is fine-tuned over time such that metastable readouts exhibit properties as of a probability density function (PDF) of model being trained --- hence we name our method \textbf{MINI}. 
+% The weights of output neurons can be learned so that the network can produce or reproduce specific temporal patterns. The main interest of this network is that although its behaviour is non-linear, the only weights that are modified during training are for the synapses that connect the hidden neurons to output neurons. Thus, the error function is quadratic with respect to the parameter vector and can be differentiated easily to a linear system.
+
+\color{red}\underline{Contribution items in paper:} \color{black}
+We categorize our contributions as follows:
+\begin{itemize}
+    \item We explore the phenomenon of metastability induced neural network architecture, that reduces the interconnect and energy requirements while preserving training accuracy.
+    \item Performed cross-platform comparison of our method with implementations done on CPU and CPU.
+    \item We validate our hypothesis by establishing equivalence homogeneous to LSM principles.
+    \item Experiments to show a working model of non-tabular Q-learning algorithm. 
+\end{itemize}
+
+\color{red}\underline{Organization of paper:} \color{black}
+In section-\ref{background}, we briefly review of metastability phenomenon and go over the background of LSMs, in addition to reviewing relevant research literature. Section-\ref{methodology} describes in-depth about our proposed approach and theoretical equivalence. Next, in section-\ref{results} we discuss implementation details and experiment results, followed by conclusion in section-\ref{conclusion}. To the best of our knowledge, this paper presents a novel research direction of establishing ANNs using metastable circuits, and this direction could lead ways for promising future developments.
+
+
+\color{green}
+\section{Background and Related Work} \label{background}
+1- NN implementations on hardware
+\\2- NN implementation with layer multiplexing
+\\3- Reservoir Computing as randomly connected NN
+\\4- Metastability --- circuit level time-violation results in non-steady state readouts
+\\5- Integrating metastability with randomly connected NN
+
+\section{Proposed Methodology} \label{methodology}
+1- Equivalency of randomly connected NN using Stone-Weierstrass theorem
+\\2- Metastability and how it is achieved
+\\3- Tuning metastable circuit
+\\4- Using metastable circuit for assigning connection to nodes
+
+\section{Experiments and Results} \label{results}
+1- Overview of system. Explain the schematic diagrams
+\\2- Table for resources and energy consumption
+\\3- Results: DQN (cartpole, inv-pendulum, mountain-car)
+
+\section{Conclusion} \label{conclusion}
+\color{black}
+% \bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{unsrt}
+\bibliography{bibFile}
+
+\end{document}
+\endinput

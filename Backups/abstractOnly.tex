@@ -1,0 +1,139 @@
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `sigconf')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%%
+%% The first command in your LaTeX source must be the \documentclass command.
+
+
+
+
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\usepackage{xcolor}
+% \usepackage[numbers]{natbib}
+% \usepackage{notoccite}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% COMMENT THIS BLOCK FOR INCLUDING ACM COPYRIGHTS
+%%% ----------- Start ---------------
+\settopmatter{printacmref=false} % Removes citation information below abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+% \pagestyle{plain} % removes running headers
+%%% ----------- End ---------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+% \AtBeginDocument{%
+%   \providecommand\BibTeX{{%
+%     \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+% \setcopyright{none}
+\setcopyright{acmcopyright}
+\copyrightyear{2021}
+\acmYear{2021}
+\acmDOI{000.000}
+
+% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[ISFPGA '21]{ISFPGA '21: ACM Symposium NAME}{DATE}{VENUE}
+\acmBooktitle{BookNAME}
+\acmPrice{Price}
+\acmISBN{000.000.000.000}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+% \acmSubmissionID{123-A56-BU3}
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+% \citestyle{acmauthoryear}
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title[short title]{Meta-DNN: Metastability-Driven Dynamic Neural Network\\with Reconfigurable Interconnects}
+
+
+
+\author{Sayyed Jaffar Ali Raza}
+\affiliation{%
+  \institution{University of Central Florida}
+  \country{}
+}
+\email{jaffar@knights.ucf.edu}
+
+\author{Mingjie Lin}
+\affiliation{%
+  \institution{University of Central Florida}
+  \country{}
+}
+\email{milin@ucf.edu}
+
+\begin{abstract} \label{abstract}
+Artificial neural networks (ANN) have proven to closely reflect behavior of a human brain, allowing the learning systems to cognitively adapt to the problems so it can learn and model non-linear and complex relationships between input stimuli and output. This end-to-end learning capability is proven to solve common problems in the fields of artificial intelligence (AI), machine learning, and deep learning. In addition to high energy requirements during training, standard ANN implementation also require high-density (fully-connected) connections and data bandwidth between each node to attain abundant logic components to carry out algebraic transformations during training phase. These requirements can be easily satisfied when training a model on tethered systems with abundant memory and compute resources, however, such requirements become a fundamental bottleneck when training ANNs on untethered, limited-resource platforms like FPGAs. Despite improvements in FPGA densities, the numerous algebraic operations at each neural synapse limit the size of network that can be trained on a standalone FPGA, thus making ANN applications less viable to be realized on small FPGA chips. We propose an implementation that is aimed at reducing high-connectivity requirements within nodes without much compromise on learning abilities of ANN. We use sparsely wired network structure and prove its mathematical equivalence to a fully connected structure. We achieve this by exploiting parallel architecture of FPGA hardware that can reconfigure the synapse/node wiring in real-time, based on input stimuli. The sparse connections between nodes are stochastic, and are factored from a probability distribution function (PDF), which is being inferred from metastable circuit. The metastable circuit comprise of hierarchical timing-violation based reconfigurable circuit that can induce delays in signal propagation lines on asynchronous temporal scale, yielding stochastic behavior at FPGA hardware level. Exploiting parallelism of FPGA hardware, the delay propagation can be end-to-end programmed and fine tuned, such that the metastable circuit can be dynamically regressed until optimal PDF is achieved specific to the desired ANN architecture---hence we call our method Meta-DNN. We implemented Meta-DNN using Xilinx FPGA ``XC7A35T-1CPG236C'', and our results present successful and equivalent execution of Q-learning algorithm and MNIST image classification tasks.
+\end{abstract}
+
+\keywords{Metastablilty, Dynamic Neural Networks, Hardware based Q-learning, Machine learning}
+
+\maketitle
+
+% \bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{unsrt}
+\bibliography{bibFile}
+
+\end{document}
+% \endinput
