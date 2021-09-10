@@ -193,7 +193,7 @@ Meta-DNN does not require well defined transitional sequence between internal st
 \end{figure}
 
 \subsection{Equivalency of Meta-DNN}
-The foundation of establishing equivalence for Meta-DNN strictly conforms with Stone-Weierstrass theorem, which enables uniform approximation of a continuous (random) function defined on a Hausdorff space $[a, b]$, as closely as desired, by a polynomial interpolation to near linear function \cite{stone-theorm-for-NN, neural-stone}. The input function $x(\cdot)$ to the network could be a continuous signal, expected to yield target output $y(\cdot)$ which is some chosen function of time, interpreting input sequence. The meta network does not possess a fully connected links between its neurons, instead the interconnects are defined by mapping function that dynamically defines weights over incoming signal. The length of weight vector $w$ is $\leq$ length of input vector $x$. The Meta network $M$ needs to effectively map input $x(\cdot)$ to output $y(\cdot)$, so we assume the mapping function $u^{M}(t)$ that constitute transient response to input sequence $x(s), s \leq t$ The value of transient response states may change continuously over time and those states contain all information about preceding events till time step $s \leq t$. We call those transient states as meta-state.
+The foundation of establishing equivalence for Meta-DNN strictly conforms with Stone-Weierstrass theorem, which enables uniform approximation of a continuous (random) function defined on a Hausdorff space $[a, b]$, as closely as desired, by a polynomial interpolation to near linear function \cite{stone-theorm-for-NN, neural-stone}. The input function $x(\cdot)$ to the network could be a continuous signal, expected to yield target output $y(\cdot)$ which is some chosen function of time, interpreting input sequence. The Meta network $M$ needs to effectively map input $x(\cdot)$ to output $y(\cdot)$, so we assume the mapping function $u^{M}(t)$ that constitute transient response to input sequence $x(s), s \leq t$ The value of transient response states may change continuously over time and those states contain all information about preceding events till time step $s \leq t$. We call those transient states as meta-state.
 
 Mathematically, the meta state can be defined as an output of some filter (or circuit in our case) $Q^{M}$ that maps $x(\cdot)$ to $y(\cdot)$,
 $$u^{M}(t) = \left( Q^{M}x\right)\left(t\right).$$
@@ -205,14 +205,9 @@ $$ \centering \small \underbrace{x(\cdot)}_{\text{input}} \rightarrow
 \underbrace{u^{M}(t)}_{\text{\parbox{14mm}{\centering meta state\\(non-steady)}}} \rightarrow
 \underbrace{f^{M}(u^{M}(t))}_{\text{\parbox{18mm}{\centering transformation\\readout function}}} \rightarrow
 \underbrace{y(t)}_{\text{output}}$$
-This relationship shows end-to-end connection between hardware-level metastable function generator (as shown in fig. \ref{fig:meta-dnn-loop}) and the Meta-DNN network (see fig. \ref{fig:meta-dnn-NN}) The meta-circuit in fig.\ref{fig:meta-dnn-loop} is recurrently evolved to establish optimal weights for inference. The evolution of meta circuit driven by the error value from meta-DNN network, where the error is covariance of time domain output sequence. We discuss in detail about dynamic adaptation and meta circuit tuning in section \ref{tuning}. The meta-circuit mapping $Q^M$ permits the transformation function $f^M$ to act as readout map without retaining information of previous states meta-states $u^{M}(s), s<t$. Additionally, $f^M$ is also time invariant, means if there's any given amount $t_{0}$ of temporal shift in the input sequence $x(\cdot)$, it causes equal amount of shift at output function $y = f^{M}\left(u^{M}(t)\right)$, that is, $$\left(f^{M} u^{t_{0}}\right)(t)=(f^{M} u)\left(t+t_{0}\right), \forall t, t_{0} \in \mathbf{R}.$$
+This relationship shows end-to-end connection between hardware-level metastable function generator (as shown in fig. \ref{fig:meta-dnn-loop}) and the Meta-DNN network (see fig. \ref{fig:meta-dnn-NN}) The meta-circuit in fig.\ref{fig:meta-dnn-loop} is recurrently evolved to establish optimal weights for inference. The evolution of meta circuit driven by the error value from meta-DNN network, where the error is covariance of time domain output sequence. We discuss in detail about dynamic adaptation and meta circuit tuning in section \ref{tuning}.
 
-Arguably, the transformation function $f^{M}$ constitutes for all maps from input function of time to output temporal patterns. Mathematically, this can be 
-
-A mathematical theorem (see appendix A) guarantees that LSMs have
-this universal computational power regardless of specific structure or implementation, provided that two abstract properties are met: the class of basis
-filters from which the liquid filters LM are composed satisfies the pointwise separation property and the class of functions from which the readout
-maps f M are drawn satisfies the approximation property.
+The meta-circuit mapping $Q^M$ permits the transformation function $f^M$ to act as readout map without retaining information of previous states meta-states $u^{M}(s), s<t $. Additionally, $f^M$
 
 \subsection{Achieving Metastability}
 i- Instantiate multiplexers,
@@ -220,7 +215,7 @@ i- Instantiate multiplexers,
 \\iii- create recurrent hierarchy of random signals while in non-steady state 
 \begin{figure*}
 \centering
-{\includegraphics[width=\linewidth]{./figs/tune-diag.png}}
+{\includegraphics[width=\linewidth]{./figs/meta-tuning.png}}
 \caption{Tuning metastability as hierarchical instantiating of metastable circuits}
 \label{fig:tuning}
 \end{figure*}
