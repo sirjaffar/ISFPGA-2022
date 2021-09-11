@@ -264,9 +264,30 @@ The above explanation introduces digital implementation of PDL. However, the LUT
 
 
 \subsection{Tuning metastable circuit} \label{tuning}
-i- by changing the resistance of signal propagation path,
-\\ii- violating timing as resistance,
-\\iii- latching output in non-steady states
+The metastability in bistable circuit can only be achieved if the sampling is done in a narrow time window around setup/hold time of device. That time window is explicitly kept minimum by manufacturers and also it varies with hardware specifications. Therefore any array of bistable circuits cannot straight forwardly achieve metastable state, instead it requires to adapt the PDLs with constraints of hardware. The delay difference $\Delta$ need to vary to balance the entropy of circuit. A straight-forward approach would be to update/correct the delay difference ($\Delta$) based on the error feedback from Meta-DNN module. We can formulate a closed loop proportional-integral (PI) controller to establish feedback loop mechanism as shown in fig. \ref{fig:tuning}. If the delay difference from one PDL is uniform to width of the setup/hold window time $\delta$, then a PDL delay $D(.)$ for any given input would be:
+$$
+D(i) = i \times \alpha + (1-i) (\alpha + \delta)
+$$
+where $\alpha$ is the delay coefficient value. Each PDL block comprises of two LUTs (see fig. \ref{fig:tuning}, where the complementing LUT inside block is just inverted pattern of main LUT, making the block a differential programmable delay block. The differential delay can be defined as:
+$$
+\begin{aligned}
+D_{{diff}} (i) &= (1-2i) \times \delta\\
+&=(-1)^{i} * \delta, \ \ \ \ \qquad  i=BIN: \left\{ 1\atop 0 \right.
+\end{aligned}
+$$
+The hierarchical structure of PDLs packed in group of two, can efficiently generate any delay sequence desired for Meta-DNN. Additionally, this arrangement can attain extremely fine tuning of delay lines by instantiating preceding PDLs to successors. For instane, the first delay block has two PDLs (2x LUTs), the second inherits and has four PDLs, and so on. A generalized expression for total delay difference that can be incurred would be:
+
+
+
+
+\subsection{Metastability-driven Neural Network}
+\begin{figure*}[htbp]
+\centering
+{\includegraphics[width=\linewidth]{./figs/iteration.png}}
+\caption{Single pass iteration of Meta-DNN}
+\label{fig:iteration}
+\end{figure*}
+
 \begin{figure}
 \centering
 {\includegraphics[width=\linewidth]{./figs/update.png}}
@@ -274,13 +295,6 @@ i- by changing the resistance of signal propagation path,
 \label{fig:update-and-compute}
 \end{figure}
 
-\subsection{Metastability-driven Neural Network}
-\begin{figure*}[htbp]
-\centering
-{\includegraphics[width=300pt]{./figs/iteration.png}}
-\caption{Single pass iteration of Meta-DNN}
-\label{fig:iteration}
-\end{figure*}
 
 i- Using metastable circuit for assigning connection to nodes,
 \\ii- the readouts can be dynamically adjusted at circuit level,
