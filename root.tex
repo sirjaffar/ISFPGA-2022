@@ -381,24 +381,27 @@ We use a fully-connected Q-learning NN implementation proposed in \cite{nn-rl-fc
 
 It is evident that the baseline settles down to oracle quite quicker than that of Meta-DNN trend in fig. \ref{fig:plots}.(b). However, we will see that the baseline takes higher wall-clock time per inference instance, and also with growing state space, the baseline performance tend to deteriorate heavily (see, table. \ref{table:max-error}). Additionally, the Meta-DNN is also utilizing fewer compute resources at a level of $35\%$ sparsity. A side-by-side comparison of an average run for both baseline and Meta-DNN is depicted in fig. \ref{fig:plots}.(c), which shows that after initial iterations, Meta-DNN exhibits success equivalent to a fully connected ANN baseline.
 
-To further validate the performance, we clocked each inference periods in terms of physical wall clock time taken per run. The trend for that comparison is depicted in fig. \ref{fig:clock-time}. As it is supposed to be, Meta-DNN has a very high inference time at start of experiment, mainly because of arbitrary interconnects being used at initial stage. However, it is important note that it rapidly adapts to desired distribution, hence requiring lesser time to do forward-pass in the network, resulting in reduced time period, which can be observed between x-axis values of 550 and 750 in fig. \ref{fig:clock-time}. Also, only after $33\%$ of elapsed runs, Meta-DNN beats the baseline. Additionally it settles down to a steady rate of $0.002439\  seconds/inference$ $(2.439ms)$ after $51\%$ of elapsed runs. The settlement time remains unattainable for baseline even at last recorded iteration. The baseline attains $0.0098968\  seconds/inference$ $(9.896ms)$, which has a difference of $7.457ms$.
+To further validate the performance, we clocked each inference periods in terms of physical wall clock time taken per run. The trend for that comparison is depicted in fig. \ref{fig:clock-time}. As it is supposed to be, Meta-DNN has a very high inference time at start of experiment, mainly because of arbitrary interconnects being used at initial stage. However, it is important note that it rapidly adapts to desired distribution, hence requiring lesser time to do forward-pass in the network, resulting in reduced time period, which can be observed between x-axis values of 550 and 750 in fig. \ref{fig:clock-time}. Also, only after $33\%$ of elapsed runs (after elapsing gray-color area in plot), Meta-DNN beats the baseline. Additionally it settles down to a steady rate of $0.002439\  seconds/inference$ $(2.439ms)$ after $51\%$ of elapsed runs. The settlement time remains unattainable for baseline even at last recorded iteration. The baseline attains $0.0098968\  seconds/inference$ $(9.896ms)$, which has a difference of $7.457ms$.
 \begin{table}[hptb]
 \begin{tabular}{rlcccccc}
 \hline
-\multicolumn{1}{c}{} &  & \multicolumn{1}{c|}{} & \multicolumn{5}{c}{Meta-DNN Sparsity (\%)} \\
-\multicolumn{1}{c}{$\textbf{S}$} &  & \multicolumn{1}{c|}{\textbf{FNN}} & \textbf{0\%} & \textbf{15\%} & \textbf{35\%} & \textbf{40\%} & \textbf{45\%} \\ \hline
-\multicolumn{1}{r|}{$65536$} & Error: & 3.11 & 4.07 & 7.91 & 10.53 & 14.80 & 24.03 \\
-\multicolumn{1}{r|}{$262144$} & Error: & 3.37 & 4.32 & 8.08 & 17.99 & 22.75 & 29.38 \\
-\multicolumn{1}{r|}{$1048576$} & Error: & 5.34 & 5.97 & 11.71 & 23.00 & 29.43 & 33.71 \\
-\multicolumn{1}{r|}{$4194304$} & Error: & XX & XX & XX & 39.30 & 48.07 & 56.61 \\
-\multicolumn{1}{r|}{$16777216$} & Error: & XX & XX & XX & XX & XX & 76.97 \\ \hline
+\multicolumn{1}{c}{\textbf{\# of}} &  & \multicolumn{1}{c|}{$\scriptstyle \textbf{Baseline}$} & \multicolumn{5}{c}{Meta-DNN Sparsity (\%)} \\
+\multicolumn{1}{r}{$\textbf{states}$} &  & \multicolumn{1}{c|}{\textbf{FNN}} & \textbf{0\%} & \textbf{15\%} & \textbf{35\%} & \textbf{40\%} & \textbf{45\%} \\ \hline
+\multicolumn{1}{r|}{$2^{20}$} & $\scriptstyle \text{Error:}$ & 3.11 & 4.07 & 7.91 & 10.53 & 14.80 & 24.03 \\
+\multicolumn{1}{r|}{$2^{22}$} & $\scriptstyle \text{Error:}$ & 3.37 & 4.32 & 8.08 & 17.99 & 22.75 & 29.38 \\
+\multicolumn{1}{r|}{$2^{24}$} & $\scriptstyle \text{Error:}$ & 5.34 & 5.97 & 11.71 & 23.00 & 29.43 & 33.71 \\
+\multicolumn{1}{r|}{$2^{26}$} & $\scriptstyle \text{Error:}$ & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black} & 39.30 & 48.07 & 56.61 \\
+\multicolumn{1}{r|}{$2^{28}$} & $\scriptstyle \text{Error:}$ & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black} & 76.97 \\
+\multicolumn{1}{r|}{$2^{30}$} & $\scriptstyle \text{Error:}$ & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black} & \color{red}XX\color{black}
+\\ \hline
 \end{tabular}
 \caption{Max inference error with growing state space}
 \label{table:max-error}
 \end{table}
 
 
-For testing the limits of our purposed methodology, we examined Meta-DNN and its baseline with incrementally growing state space size and varying sparsity of interconnects. The results of which are shown in table \ref{table:max-error}. Meta-DNN at sparsity level of $0\%$ is theoretically 
+For testing the limits of our purposed methodology, we examined Meta-DNN and its baseline with incrementally growing state space size and varying sparsity of interconnects. The results of which are shown in table \ref{table:max-error}. Meta-DNN at sparsity level of $0\%$ have no sparsity at all, and theoretically it is a fully-connected network, where each neuron has direct link to its adjacent-layer neurons. The sparsity is set by increasing or decreasing the number count of PDL-LUTs in meta-circuit shown in fig. \ref{fig:tuning}. Sparsity of $0\%$ constitutes to number of PDLs equal to number of nodes in the network, hence it becomes identical representation of baseline with extra overhead of hardware. Similarly, higher sparsity percentage has lower resolution of interconnects and PDLs in the system. The table
+show distinctive performance evidence for Meta-DNN in higher dimensions, whereas the baseline method experienced synthesis time-out, resulting in failure. The failure runs are shown as \color{red}XX \color{black} in the table. Also, by observing the failure occurrence, we can correlate that growth in dimensionality impacts sub-linearly to performance of Met-DNN. thus making it viable enough to be considered for problems (like Q-learning itself) where scaling-up of space is common. 
 
 \section{Conclusion} \label{conclusion}
 
