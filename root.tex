@@ -50,6 +50,8 @@
 \usepackage{amsthm}
 % \usepackage[numbers]{natbib}
 % \usepackage{notoccite}
+% Please add the following required packages to your document preamble:
+\usepackage{booktabs}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% COMMENT THIS BLOCK FOR INCLUDING ACM COPYRIGHTS
@@ -375,7 +377,23 @@ where each unit $u_{k}^{n, z}$ is 1-bit flag that tells if any action matrix ele
     
     \item A trend for resources requirements with growth in state space
 \end{itemize}
+We use a fully-connected Q-learning NN implementation proposed in \cite{nn-rl-fcnn} as our baseline. The problem implemented with baseline and Meta-DNN is a 2D maze routing problem, where the objective is to navigate to the terminal state in fewer steps possible. The action space remains a 4-tuple constant for moving in all four directions on the grid (up, down, left, right). However, actions are characterized as stochastic with $\epsilon=0.3$, and the state space can grow infinitely, thus keeping the complexity of problem admissible for evaluating high-dimensional performance. The comparison plots in fig. \ref{fig:plots} illustrate the performance by drawing comparison of a reward signal per unit inference step. The state space size used for those runs was $2^{20}=1048576$, which is quite over 1 million states, each with state having 4 possible actions to take. The plot trend seen in fig.\ref{fig:plots}.(a) and \ref{fig:plots}.(b) show independent runs for the baseline and Meta-DNN respectively. To ensure repeatability of solution, multiple runs were carried out in each case. It is evident that the baseline achieves higher reward  A side-by-side comparison 
 
+
+\begin{table}[]
+\begin{tabular}{rlcccccc}
+\hline
+\multicolumn{1}{c}{} &  & \multicolumn{1}{c|}{} & \multicolumn{5}{c}{Meta-DNN Sparsity (\%)} \\
+\multicolumn{1}{c}{$\textbf{S}$} &  & \multicolumn{1}{c|}{\textbf{FNN}} & \textbf{0\%} & \textbf{15\%} & \textbf{35\%} & \textbf{40\%} & \textbf{45\%} \\ \hline
+\multicolumn{1}{r|}{$65536$} & Error: & 3.11 & 4.07 & 7.91 & 10.53 & 14.80 & 24.03 \\
+\multicolumn{1}{r|}{$262144$} & Error: & 3.37 & 4.32 & 8.08 & 17.99 & 22.75 & 29.38 \\
+\multicolumn{1}{r|}{$1048576$} & Error: & 5.34 & 5.97 & 11.71 & 23.00 & 29.43 & 33.71 \\
+\multicolumn{1}{r|}{$4194304$} & Error: & XX & XX & XX & 39.30 & 48.07 & 56.61 \\
+\multicolumn{1}{r|}{$16777216$} & Error: & XX & XX & XX & XX & XX & 76.97 \\ \hline
+\end{tabular}
+\caption{Max inference error with growing state space}
+\label{table:max-error}
+\end{table}
 
 \section{Conclusion} \label{conclusion}
 
