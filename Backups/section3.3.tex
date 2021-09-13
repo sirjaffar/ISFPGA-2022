@@ -1,0 +1,150 @@
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `sigconf')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%%
+%% The first command in your LaTeX source must be the \documentclass command.
+
+
+
+
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\usepackage{amsmath} 
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref} 
+\usepackage{amsmath}
+% \usepackage{amssymb}
+\usepackage{amsthm}
+% \usepackage[numbers]{natbib}
+% \usepackage{notoccite}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% COMMENT THIS BLOCK FOR INCLUDING ACM COPYRIGHTS
+%%% ----------- Start ---------------
+\settopmatter{printacmref=false} % Removes citation information below abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+% \pagestyle{plain} % removes running headers
+%%% ----------- End ---------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+% \AtBeginDocument{%
+%   \providecommand\BibTeX{{%
+%     \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+% \setcopyright{none}
+\setcopyright{acmcopyright}
+\copyrightyear{2021}
+\acmYear{2021}
+\acmDOI{000.000}
+
+% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[ISFPGA '21]{ISFPGA '21: ACM Symposium NAME}{DATE}{VENUE}
+\acmBooktitle{BookNAME}
+\acmPrice{Price}
+\acmISBN{000.000.000.000}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+% \acmSubmissionID{123-A56-BU3}
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+% \citestyle{acmauthoryear}
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title[Meta-DNN with Reconfigurable Interconnects]{Meta-DNN: Metastability-Driven Dynamic Neural Network\\with Reconfigurable Interconnects}
+
+\maketitle
+
+\subsection{Tuning metastable circuit} \label{tuning}
+The metastability in bistable circuit can only be achieved if the sampling is done in a narrow time window around setup/hold time of device. That time window is explicitly kept minimum by manufacturers and also it varies with hardware specifications. Therefore any array of bistable circuits cannot straight forwardly achieve metastable state, instead it requires to adapt the PDLs with constraints of hardware. The delay difference $\Delta$ need to vary to balance the entropy of circuit. A straight-forward approach would be to update/correct the delay difference ($\Delta$) based on the error feedback from Meta-DNN module.
+\\\color{red}\underline{Tuning Circuit: }\color{black}We can formulate a closed loop proportional-integral (PI) controller to establish feedback loop mechanism as shown in fig. \ref{fig:tuning}. If the delay difference from one PDL is similar as smallest width of the setup/hold window time $\delta$, then a PDL delay $D(\cdot)$ for any given input would be:
+$$
+D(i) = i \times \alpha + (1-i) (\alpha + \delta)
+$$
+where $\alpha$ is the delay coefficient value. Each PDL block comprises of two LUTs (see fig. \ref{fig:tuning}, where the complementing LUT inside block is just inverted pattern of main LUT, making the block a differential programmable delay block. The differential delay can be defined as:
+$$
+\begin{aligned}
+D_{{diff}} (i) &= (1-2i) \times \delta\\
+&=(-1)^{i} * \delta, \ \ \ \ \qquad  i=BIN: \left\{ 1\atop 0 \right.
+\end{aligned}
+$$
+The hierarchical structure of PDLs packed in group of two, can efficiently generate any delay sequence desired for Meta-DNN. Additionally, this arrangement can attain extremely fine tuning of delay lines by instantiating preceding PDLs to successors. For instane, the first delay block has two PDLs (2x LUTs), the second inherits and has four PDLs, and so on. A generalized expression for total delay difference that can be incurred would be:
+$$
+\begin{aligned}
+\Delta_{f} &= \sum_{\mathstrut i=0}^k \left(-1 \right)^{C_i} * 2^i \delta
+\end{aligned}
+$$
+where $C_i$ is the least significant \textit{i}th counter bit (\textit{i}th LSB) at i=0. And i=k is most significant bit (MSB). The total delay $\delta_f$ incurred is adjusted based on Meta-DNN's requirements. The adjustments are done by tuning the circuit into two modes; coarse and fine tuning.
+\\\color{red}\underline{Fine and Coarse Tuning: }\color{black}As the name suggests, the coarse tuning ($\delta_{co}$) is responsible to lower resolution MSBs in the distribution, whereas fine tuning mode ($\delta_{fn}$) is capable to adjust on precise resolution LSBs in the delay line. With fine delay block with $n$ PDLs, and coarse delay block with $m$ PDLs, we can define a delay range:
+$$ 
+\begin{aligned}
+&R = \left\{ n\cdot\delta_{fn}+m\cdot\delta_{co} \ , -n\cdot\delta_{fn}-m\cdot\delta_{co}\ \right\}, \text{ and}\\
+& \Delta_{f} = w_{fn}\cdot\delta_{fn} + w_{co}\cdot\delta_{co}
+\end{aligned}
+$$
+where the weights $w_{fn}$ and $w_{co}$ can be carefully defined over inequalities $\left\{-n<w_{fn}<n, \ -m<w_{co}<m\right\}$, which allows to produce any delay difference in range $R$. The weights are used as tuning levels in the circuit in fig. \ref{fig:tuning}, and the decoder uses these weights to perform binary counting function to differentiate total number of high bits for both delay lines (top and bottom) in each PDL block.
+
+For any input $I^{t}[i] \in \{0, 1\}, \text{ or } I^{b}[i] \in \{0, 1\}$ to top or bottom delay paths respectively, the weights are defined as
+$w = \sum_{i=1}^{n} I^{t}[i] -I^{b}[i].$ Thus the decoder in circuit would use the weights to perform mapping of every PDL block to counter values, differentiated with PDL output values, to adjust the counter in a closed loop feedback from PDLs.
+
+\end{document}
+\endinput

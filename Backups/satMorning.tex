@@ -157,15 +157,13 @@ In this paper, we aim to present ANN implementation for FPGA platform that does 
 We unfold the first statement by introducing concept of \textit{metastability} in hardware. Metastability can be simply defined as a phenomenon that can cause a signal to exhibit probabilistic behavior in asynchronous time domain \cite{meta-def}. Metastable behavior is commonly seen as unwanted property, as it creates arbitrary outputs. On the other hand, it can be seen as a high-entropy timing violation circuit, generating stochastic outcomes in time domain. Usage of metastabiltiy has been reported to generate random bits in \cite{meta-trng}, \cite{meta-3}, and \cite{meta-2} by establishing programmable delay lines (PDLs) that can perturb signal propagation distance in the circuitry. Inspired by those techniques, we develop a hierarchical timing-violation based FPGA circuit by instantiating PDLs, and perturbing their propagation distance dynamically on a temporal scale. The perturbation in distance defines entropy of the output signal. The output signal can be observed as a stochastic probability distribution function (PDF). This PDF is utilized for reconfiguring the network connections and determining weights of the interconnect. During training, the circuit is fine-tuned by end-to-end regression (closed-loop feedback) until entropy is minimized and an optimal PDF is achieved (see fig. \ref{fig:meta-dnn-loop} and \ref{fig:meta-dnn-NN}).
 
 The second statement is addressed by showing that a randomly connected weighted network can be approximated equivalent to densely connected linear network. The equivalence can be observed in strict conformance with the Stone-Weierstrass theorem, which enables uniform approximation of a continuous (random) function defined on a Hausdorff space $[a, b]$, as closely as desired, by a polynomial interpolation to near linear function \cite{stone-theorm-for-NN, neural-stone}. This similar approximation method is also used for establishing proof of a Liquid State Machine (LSM) that exhibits comparable properties (ex. sparse connections, fewer readouts etc.) to our proposed system to a limited extent \cite{lsm}. Additionally, we leverage upon studies carried out in \cite{3-layer-NNs-universal}, which emphasize that, provided sufficient number of neurons at hidden layer, a three-layer NN with sigmoid function in hidden layer and a linear function on output layer can virtually approximate any non-linear transformations \cite{3-layer-NNs-universal, nn-uvfa}. To summarize, the metastable circuit induces its readout stream to form sparse neural network assigning probabilistic weights to each neuron connection, and the implementation is fine-tuned over time such that metastable readouts exhibit properties as of a probability density function (PDF) of model being trained.
-
-\begin{figure}
+\begin{figure*}[hptb]
 \centering
-{\includegraphics[width=\linewidth]{./figs/meta-dnn-NN.png}}
-\caption{Neural network architecture of Meta-DNN}
-\label{fig:meta-dnn-NN}
-\end{figure}
-
-\color{red}\underline{Contribution items in paper:} \color{black}
+{\includegraphics[width=\linewidth]{./figs/meta-dnn-loop.png}}
+\caption{Metastable hardware circuit with closed-loop controller}
+\label{fig:meta-dnn-loop}
+\end{figure*}
+\\\color{red}\underline{Contribution items in paper:} \color{black}
 We categorize our contributions as follows:
 \begin{itemize}
     \item We explore the phenomenon of metastability induced neural network architecture, that reduces the interconnect and energy requirements while preserving inference accuracy.
@@ -175,26 +173,25 @@ We categorize our contributions as follows:
 \end{itemize}
 \color{red}\underline{Organization of paper:} \color{black}
 In section-\ref{background}, we briefly review of metastability phenomenon and go over the background of LSMs, in addition to reviewing relevant research literature. Section-\ref{methodology} describes in-depth about our proposed approach and theoretical equivalence. Next, in section-\ref{results} we discuss implementation details and experiment results, followed by conclusion in section-\ref{conclusion}. To the best of our knowledge, this paper presents a novel research direction of establishing ANNs using metastable circuits, and this direction could lead ways for promising future developments.
-
+\color{green}
 \section{Background and Related Work} \label{background}
-This section can be summarized into two main categories. The first category focuses on recent research that allows implementation of ANNs on FPGA with low precision data types (efficient hardware implementation of low precision ANNs), and the second category focuses on the concept of metastability and it's applications in digital design. The two pave the path for proposing a metastability induced artificial neural network, that we name as Meta-DNN method. 
-
 1- NN implementations on hardware
 \\2- NN implementation with layer multiplexing
 \\3- Reservoir Computing as randomly connected NN
 \\4- Metastability --- circuit level time-violation results in non-steady state readouts
 \\5- Integrating metastability with randomly connected NN
-
+\color{black}
 
 \section{Proposed Methodology} \label{methodology}
 In this section, we start by presenting equivalence of a sparsely connected Meta-DNN model with a fully connected ANN model. The sparsity of Meta-DNN is dynamically determined from metastable circuit (hence the name Meta-DNN). The Meta-DNN, unlike standard ANN, does not require a task-dependent construction of neural circuit, instead relies on metastable circuitry for establishing neural connections. Theoretically, the metastable circuitry exhibit stochastic properties and can be realized as hardware-based PDF function which can evolve recurrently in a closed loop as shown in fig. \ref{fig:meta-dnn-loop}. Meta-DNN does not require well defined transitional sequence between internal states of ANN for giving stable targets. Instead, stable target states can be estimated from sparse readouts of output neurons in the network. The sparsity is dynamically adjusted by selecting stochastic interconnects, which in turn perturb the wights of output neurons such that the network can reproduce temporal patterns equivalent to a fully connected network model. Fig. \ref{fig:meta-dnn-NN} illustrates dynamic interconnect mapping efficacy, which allows to reproduce specific target outputs based on temporally integrating random weights in the neural circuit.
 \\\color{red}\underline{Error as Quadratic Function: }\color{black}Although, the dynamical reconfiguration of interconnects categorize as non-linear, but the only weights that get perturbed are for those synapse connections, which can be accounted as ``mapped'' to the output neurons at given timestep. Thus, a quadratic error function can be defined with respect to temporal network parameters and can be easily differentiated to a liner circuit system. Additionally, the reconfiguration of interconnects is adjusted at circuit level which enables changing the network architecture in real-time, allowing Meta-DNN to ideally possess unique neural connections at every time step.
-\begin{figure*}[hptb]
+\begin{figure}
 \centering
-{\includegraphics[width=\linewidth]{./figs/meta-dnn-loop.png}}
-\caption{Metastable hardware circuit with closed-loop controller}
-\label{fig:meta-dnn-loop}
-\end{figure*}
+{\includegraphics[width=\linewidth]{./figs/meta-dnn-NN.png}}
+\caption{Neural network architecture of Meta-DNN}
+\label{fig:meta-dnn-NN}
+\end{figure}
+
 \subsection{Equivalency of Meta-DNN}
 The foundation of establishing equivalence for Meta-DNN strictly conforms with Stone-Weierstrass theorem, which enables uniform approximation of a continuous (random) function defined on a Hausdorff space $[a, b]$, as closely as desired, by a polynomial interpolation to near linear function \cite{stone-theorm-for-NN, neural-stone}. The input function $x(\cdot)$ to the network could be a continuous signal, expected to yield target output $y(\cdot)$ which is some chosen function of time, interpreting input sequence. The meta network does not possess a fully connected links between its neurons, instead the interconnects are defined by mapping function that dynamically defines weights over incoming signal. The length of weight vector $w$ is $\leq$ length of input vector $x$. The Meta network $M$ needs to effectively map input $x(\cdot)$ to output $y(\cdot)$, so we assume the mapping function $u^{M}(t)$ that constitute transient response to input sequence $x(s), s \leq t$ The value of transient response states may change continuously over time and those states contain all information about preceding events till time step $s \leq t$. We call those transient states as meta-state.
 
@@ -249,24 +246,25 @@ $$
 This proves uniform equivalence on compact interval $[0,1]$ \hfill \qedsymbol{}
 \\Proof for functions with arbitrary intervals $C[a, b]$, stone-weierstrass theorem extends to define homeomorphism continuity \cite{homeomorphic, basic-real-analysis}, thus the composite continuous function can be realized on compact metric space. A similar methodology has been followed to prove equivalence of a reservoir network machines \cite{reservoir-computing, lsm, esn}, to a traditional fully connected neural networks.
 
-\subsection{Achieving Metastability} \label{achieving-metastability}
+\subsection{Achieving Metastability}
 Metastability condition is a probabilistic phenomenon, which appears in digital devices such as FPGAs when an input signal is registered in temporal pattern that is asynchronous to the clock of system. Once the device enters into metastable state, it's response to the input sequence becomes stochastic and is prone to high entropy. The probability that the device will still be in metastable state some time later has been shown to be an exponential function which can be discretely adjusted by adjusting the signal propagation path until task-specific desired conditions are met \cite{understanding-meta}. Although metastability phenomenon tends to be an unwanted condition in deterministic circuits, its tendency to accept adjustments through perturbing propagation paths makes it analogous to a programmable machine which posses probabilistic behavior at a hardware circuit level. 
 \\
 \color{red}\underline{Instantiate multiplexers:} \color{black}
 Since the duration of a metastable condition is a probabilistic phenomenon, and therefore there is no guaranteed maximum time to remain in non-stady probabilistic mode, which makes it difficult to utilize metastability phenomenon as programmable circuit. Nevertheless, we can still achieve desired metastable performance from on circuit level by instantiating a stack of bi-stable devices (like DFFs, MUX etc.) in a closed loop, and using their input sensitivities to program the propagation paths. A primitive example of programmable metastable device can be a combinatorial circuit of SR-latch, that generates single-bit target output which is stochastic \cite{meta-latch-puf}. Such implementations are useful to design systems like true random number generators (TRNG, \cite{meta-trng}) or random uncloneable filter (PUF, \cite{puf-saqib}), but these implementations encounter bottlenecks when being scaled up for high-complexity problems. One way to build a scalable design is by first, building redundant bistable circuits inside a lookup table (LUT), and then use those LUTs as metastable sources, connected in a hierarchy, such that each metastable device (LUT) is instantiated modularly, allowing both, wider bandwidth of output, and denser programming bits for attaining precise control on programmable delay lines (PDLs). The aforementioned hierarchy is also illustrated in fig. \ref{fig:meta-dnn-loop}, whereas modular instantiation of meta-circuits is shown in fig. \ref{fig:tuning}. Although, with poor statistical properties, the modularity between circuits allow convenience of harvesting n-dimensional metastable states at higher precision. Mainly because each preceding module can act as an arbiter circuit for succeeding module, and succeeding module acts as a randomizer circuit. Thus allowing to violate the setup/hold time requirements and incrementally altering the length of signal propagation path, and filtering out the deterministic bits.
-\begin{figure*}[hbtp]
+\\
+\color{red}\underline{Timing violation through delays:} \color{black} Each circuit in modular architecture is triggered initially by a seed generated by pseudo random circuit like linear feedback shift register (LFSR). Once triggered, the signal propagation path length can be perturbed in very fine increments or decrements by varying inputs to the LUT pins. A simple illustration of single-bit delay circuit is shown in fig. \ref{fig:tuning}.a which uses a 3-input LUT. The LUT constitute of 2x1 multiplexers (MUXs) connected to a set of SRAM cells. The 1-bit input defines an address for SRAM cell to be accessed and transmitted for output of the LUT. The LUT is programmed as a PDL to transmit SRAM data cell to output through a custom propagation path. The propagation line can be customized in \textit{$2^2=4$} paths, each path has different resistance which would define the time required to propagate signal from SRAM to output. For example, the propagation path illustrated in red color in fig. \ref{fig:tuning} is the shortest path when delay control pins are set to $\left(A_1A_2=00\right)$. Similarly it can be programmed to be longest path (blue lines in fig) by setting delay pins as $\left(A_1A_2 = 11\right)$. We use Xilinx ``XC7A35T-1CPG236C"" which is equipped with 6-input LUT capability, hence allowing us to have $2^5=32$ discrete levels for programming delay combinations. 
+\begin{figure*}
 \centering
-{\includegraphics[width=\linewidth]{./figs/meta-tuning.png}}
+{\includegraphics[width=\linewidth]{./figs/tune-diag.png}}
 \caption{Tuning metastability as hierarchical instantiating of metastable circuits}
 \label{fig:tuning}
 \end{figure*}
-\\\color{red}\underline{Timing violation through delays:} \color{black} Each circuit in modular architecture is triggered initially by a seed generated by pseudo random circuit like linear feedback shift register (LFSR). Once triggered, the signal propagation path length can be perturbed in very fine increments or decrements by varying inputs to the LUT pins. A simple illustration of single-bit delay circuit is shown in fig. \ref{fig:tuning}.a which uses a 3-input LUT. The LUT constitute of 2x1 multiplexers (MUXs) connected to a set of SRAM cells. The 1-bit input defines an address for SRAM cell to be accessed and transmitted for output of the LUT. The LUT is programmed as a PDL to transmit SRAM data cell to output through a custom propagation path. The propagation line can be customized in \textit{$2^2=4$} paths, each path has different resistance which would define the time required to propagate signal from SRAM to output. For example, the propagation path illustrated in red color in fig. \ref{fig:tuning} is the shortest path when delay control pins are set to $\left(A_1A_2=00\right)$. Similarly it can be programmed to be longest path (blue lines in fig) by setting delay pins as $\left(A_1A_2 = 11\right)$. We use Xilinx ``XC7A35T-1CPG236C"" which is equipped with 6-input LUT capability, hence allowing us to have $2^5=32$ discrete levels for programming delay combinations. 
 \\\color{red}\underline{Recurrent random events in non-steady state:}\color{black}
 The above explanation introduces digital implementation of PDL. However, the LUT based PDL described above can only work for a single data-bit transmission. However, using an entire LUT for single bit transmission is certainly undesirable and expensive as well. The data bits can be increased at the cost of reducing bits from delay control. Or, we can retain the flexibility of finer PDL levels, and use modular structure in fig. \ref{fig:tuning} to recurrently access multiple LUTs on each timestep, hence at each timestep, we can accumulate $n$-bits long signal resulting from stacking LUTs as metastability source as shown in fig. \ref{fig:meta-dnn-loop}. Although, we can exploit the parallelism of FPGA to recurrently access n-LUTs circuits, we would still require to harvest the output of LUTs to derive a distribution that possess statistical properties of a probabilistic function. The harvesting is done by accumulating each output signal of LUTs as random events, and perform synchronization of random bits arriving asynchronously as mentioned in \cite{trng-harvest}. This can be efficiently implemented using the circuit depicted in fig. \ref{fig:meta-dnn-loop}, which has arrays of LUTs and their corresponding output get latched in harvesting module. The harvesting block can be realized as discrete random distribution function comprised on $n$ random events. The random distribution constitutes as PDF function for defining efficacy mapping of for metastability-driven dynamic neural network (Meta-DNN depicted in fig. \ref{fig:meta-dnn-NN}).
 
+
 \subsection{Tuning metastable circuit} \label{tuning}
-The metastability in bistable circuit can only be achieved if the sampling is done in a narrow time window around setup/hold time of device. That time window is explicitly kept minimum by manufacturers and also it varies with hardware specifications. Therefore any array of bistable circuits cannot straight forwardly achieve metastable state, instead it requires to adapt the PDLs with constraints of hardware. The delay difference $\Delta$ need to vary to balance the entropy of circuit. A straight-forward approach would be to update/correct the delay difference ($\Delta$) based on the error feedback from Meta-DNN module.
-\\\color{red}\underline{Tuning Circuit: }\color{black}We can formulate a closed loop proportional-integral (PI) controller to establish feedback loop mechanism as shown in fig. \ref{fig:tuning}. If the delay difference from one PDL is similar as smallest width of the setup/hold window time $\delta$, then a PDL delay $D(\cdot)$ for any given input would be:
+The metastability in bistable circuit can only be achieved if the sampling is done in a narrow time window around setup/hold time of device. That time window is explicitly kept minimum by manufacturers and also it varies with hardware specifications. Therefore any array of bistable circuits cannot straight forwardly achieve metastable state, instead it requires to adapt the PDLs with constraints of hardware. The delay difference $\Delta$ need to vary to balance the entropy of circuit. A straight-forward approach would be to update/correct the delay difference ($\Delta$) based on the error feedback from Meta-DNN module. We can formulate a closed loop proportional-integral (PI) controller to establish feedback loop mechanism as shown in fig. \ref{fig:tuning}. If the delay difference from one PDL is uniform to width of the setup/hold window time $\delta$, then a PDL delay $D(.)$ for any given input would be:
 $$
 D(i) = i \times \alpha + (1-i) (\alpha + \delta)
 $$
@@ -278,111 +276,41 @@ D_{{diff}} (i) &= (1-2i) \times \delta\\
 \end{aligned}
 $$
 The hierarchical structure of PDLs packed in group of two, can efficiently generate any delay sequence desired for Meta-DNN. Additionally, this arrangement can attain extremely fine tuning of delay lines by instantiating preceding PDLs to successors. For instane, the first delay block has two PDLs (2x LUTs), the second inherits and has four PDLs, and so on. A generalized expression for total delay difference that can be incurred would be:
-$$
-\begin{aligned}
-\Delta_{f} &= \sum_{\mathstrut i=0}^k \left(-1 \right)^{C_i} * 2^i \delta
-\end{aligned}
-$$
-where $C_i$ is the least significant \textit{i}th counter bit (\textit{i}th LSB) at i=0. And i=k is most significant bit (MSB). The total delay $\delta_f$ incurred is adjusted based on Meta-DNN's requirements. The adjustments are done by tuning the circuit into two modes; coarse and fine tuning.
-\\\color{red}\underline{Fine and Coarse Tuning: }\color{black}As the name suggests, the coarse tuning ($\delta_{co}$) is responsible to lower resolution MSBs in the distribution, whereas fine tuning mode ($\delta_{fn}$) is capable to adjust on precise resolution LSBs in the delay line. With fine delay block with $n$ PDLs, and coarse delay block with $m$ PDLs, we can define a delay range:
-$$ 
-\begin{aligned}
-&R = \left\{ n\cdot\delta_{fn}+m\cdot\delta_{co} \ , -n\cdot\delta_{fn}-m\cdot\delta_{co}\ \right\}, \text{ and}\\
-& \Delta_{f} = w_{fn}\cdot\delta_{fn} + w_{co}\cdot\delta_{co}
-\end{aligned}
-$$
-where the weights $w_{fn}$ and $w_{co}$ can be carefully defined over inequalities $\left\{-n<w_{fn}<n, \ -m<w_{co}<m\right\}$, which allows to produce any delay difference in range $R$. The weights are used as tuning levels in the circuit in fig. \ref{fig:tuning}, and the decoder uses these weights to perform binary counting function to differentiate total number of high bits for both delay lines (top and bottom) in each PDL block.
 
-For any input $I^{t}[i] \in \{0, 1\}, \text{ or } I^{b}[i] \in \{0, 1\}$ to top or bottom delay paths respectively, the weights are defined as
-$w = \sum_{i=1}^{n} I^{t}[i] -I^{b}[i].$ Thus the decoder in circuit would use the weights to perform mapping of every PDL block to counter values, differentiated with PDL output values, to adjust the counter in a closed loop feedback from PDLs.
 
-\subsection{Metastability-driven ANN}
-FPGA accelerators can be seen as natural choice when it comes to parallelize neural network computations. Mainly due to the fact that FPGAs allow spatial architecture of hardware access, thus allowing a neural network to be realized as a 2D lattice, where each node can interact parallel and simultaneous with neighbor nodes. FPGA implementation of ANNs conceptually take the entire network as whole and deploy it at once on the fabric, such that each instruction receives its own dedicated hardware block, and every hardware block can be executed simultaneously (same clock cycle), creating extreme parallelism in implementation \cite{parallel-prog-for-fpga}. However, simultaneous execution of instructions requires tremendous amount of interconnect densities, and redundant data-paths resources, which makes implementation of large-scale ANN systems non-viable on FPGAs.
-\\\color{red}\underline{Metastability Defined Network Paths: } \color{black} Our method addresses above issue by introducing dynamic reconfiguration of network paths. Instead of having redundant fully-connected network branches which remain fixed for entire operation period, dynamic reconfiguration allows to define paths based on the need of the inference task. Meta-DNN adjusts the network topology dynamically and does not follow a fully connected symmetric topology, instead, it uses a sparse model of connections, which is suggested from non-steady probabilistic metastable circuit defined in sec. \ref{achieving-metastability} and \ref{tuning}. The probabilities are in the range of (0, 1) defined as fixed-point implementation, which means that they can be represented as unsigned integers without much concern for scaling. Along with that, all neurons in the hidden layer are activation functions whose output is bounded by sigmoid excitation function, which is a bounded function, thus keeping weights bounded and propagate them sub-linearly to avoid numerical instability. 
-\\\color{red}\underline{Replace Redundancy with Recurrence: } \color{black} The advantage of Meta-DNN is that we can reduce the dimensionality of network interconnections by establishing sparse efficacy map over redundant full connections. The sparsity does not trades-off the power of non-linearity of network, due to the fact that every module on the FPGA device is executed in parallel and that enables metastable circuit to recurrently propose dynamic interconnect efficacy maps. Thus, for each steady neuron synapse in Metastability-driven ANN (Meta-DNN), a path can be defined to access any other neuron through a dynamic meta-state $u^{M}(t)$. Note that at any specific timestep, Meta-DNN does not guarantees all possible datapath connections between neuron synapse, as offered in a fully-connected system. However it can asynchronously modify the network topology to integrate required datapath mapping in next clock occurrence. This property can arguably raise limitations for Meta-DNN, as the efficacy mapping is directly dependent on stochastic PDF model, and attaining most optimal PDF for a task is non-trivial problem itself. We address this constraint by introducing a transformation function $f^{M}(u^{M}(\cdot))$ at the output readout. $f^{M}$ is memoryless and time-invariant, therefore it does not creates additional resource overhead, but it can retain information about previous temporal shifts in input-output which is leveraged by meta-circuit to infer best possible interconnect mapping by adhering to temporal shifts. Our proposed methodology can evidently be categorized as an offshoot of Reservoir Computing (RC) neural network described in \cite{reservoir-computing, reservoir-computing-hw}. However, Meta-DNN differs significantly as it allows flexibility to dynamically adapt the reservoir layer connections in RC, that too in online fashion during ongoing inference. 
-\\\color{red}\underline{Meta-DNN Bandwidth: } \color{black}
-Digitally identical to standard architecture of a neuron synapse, a unit neuron inside Meta-DNN constitutes of simple arithmetic elements (ADD, MUL, etc.) together with activation function module. The data resolution inside each neuron is set to be 1-byte long to restrict the cost of resource requirements. The input data is resolved bitwise through PDLs in batch of $32x8$ bits. The input is normalized in the range of $-1$ to $+1$, and is padded by 17 bits in terms of weight of a neuron, where 1-bit is to retain the sign, and other $(8+8)$ bits are for identifying fraction terms of input after getting encoded with weights. After passing through the activation module, the output is obtained as signed 25-bit sample, with a nomenclature of $(1+8+16)-bits$ for sign, whole, and fractional respectively. Although, modifications to precision can be easily made without making significant changes to the primary methodology, a lower precision length is deliberately chosen in order to avoid the resource overhead, and reduce the overflow per neuron. Additionally, we exploit the parallelism of FPGA, and make simultaneous updates to all neurons (in same clock instance). With a lot of recurrency in calculations, the small precision variations in input samples does not affects the accuracy of Meta-DNN, as all of the layers in system are affected (to some extent) by those input changes, so they develop tolerance to precision variability.
-\\\color{red}\underline{Meta-DNN Layer Multiplexing: } \color{black} We adopt the layer multiplexing method proposed in \cite{3-layer-NNs-universal} and integrate it with metastable circuit for constructing neuron layers inside Meta-DNN. Layer multiplexing allows to allocate a single largest layer with maximum number of neurons with its control block to carry out arithmetic operations. The single layer is sequentially multiplexed to exhibit functions of all layers in the network with every MUXed mode. The only additional component required to operate a MUXed layer constitutes of a MUX-controller block, which depicts as a finite state machine (FSM). The MUX-controller ensures that behavior of each layer in the network is complete by determining appropriate active neurons, and assigning them right inputs, weights, and activation values from block memory. For instance, if $X$ is the input vector to the network, and $L^{1}, L^{2 \cdots} L^{k}$ be the number of neurons in layer $1,2 \ldots k$. Now, lets assume any layer, say $L^{m-1}$th layer has the maximum neuron count, then only $L^{m-1}$ will be allocated the hardware space with each neuron having its arithmetic control blocks with each neuron having maximum inputs. Layer $L^{m-1}$ would suffice to represent all other layers in ANN that require resources less than $L^{m-1}$ itself. Thus realizing layer multiplexed NN model allows to off-load redundant resource overhead for FPGA.
 
-\section{Experiments and Results} \label{results}
-\begin{figure}
+
+\subsection{Metastability-driven Neural Network}
+\begin{figure*}[htbp]
 \centering
 {\includegraphics[width=\linewidth]{./figs/iteration.png}}
 \caption{Single pass iteration of Meta-DNN}
 \label{fig:iteration}
-\end{figure}
-
-\begin{figure*}
-\centering
-{\includegraphics[width=\linewidth]{./figs/plots.png}}
-\caption{Plots for Q-learning experiments}
-\label{fig:plots}
 \end{figure*}
+
 \begin{figure}
 \centering
 {\includegraphics[width=\linewidth]{./figs/update.png}}
 \caption{Exploded view of update stage in Meta-DNN iteration}
 \label{fig:update-and-compute}
 \end{figure}
-\begin{figure}
-\centering
-{\includegraphics[width=\linewidth]{./figs/clock-time-compare.pdf}}
-\caption{Comparison plot for physical time per inference }
-\label{fig:clock-time}
-\end{figure}
 
-In this section, we discuss the hardware design developed for implementing Q-learning inference model using Meta-DNN on Artix-7 XC7A35T-1CPG236C FPGA device. Followed by the experimental analysis of the built model. With the aim to develop a generalized model of hardware accelerator, we chose to deploy Q-learning\footnote{Readers can follow \cite{q-learning-paper} and \cite{q-learning-theory} to learn more about Q-learning.} inference algorithm \cite{q-learning-paper} using Meta-DNN technique. The reasoning behind choosing Q-learning for benchmarking Meta-DNN is primarily based on two points: (i) Q-learning is one of the widely accepted algorithm that relies on recurrent updates and Meta-DNN is ideal for recurrent inference models, and (ii) Q-learning has a notorious limitation due to exponential growth as its problem space grows. In that case, Meta-DNN can be rigorously evaluated to examine if it can substantially reduce the synapses requirements as claimed in section \ref{methodology}. Moreover, Q-learning is considered within class of general-purpose algorithms, therefore a successful implementation of Q-learning model would signify the generic behavior of Meta-DNN. Although the Q-learning convergence criterion requires its states to be visited for timesteps until $n\rightarrow\infty$, however in practice, it is possible to render sufficiently relevant Q values after handful number of iterations. 
-\\\color{red}\underline{Hardware Architecture: }\color{black} The proposed hardware system for Meta-DNN based Q-learning is depicted in fig. \ref{fig:update-and-compute}. The depicted system in the figure has $N$ states and $M$ actions per state. Note that there is a possibility of $N^M$ state-action pairs $(s_i,a_j) \ \forall \{s_i \in S^N, a_j \in A^M\}$, however, our proposed design only assign $N\times M$ blocks on hardware, and dynamically assign them values corresponding to required $(s-a)$ pair at any given time. At initial stage, the system is triggered with a clock edge, and randomly initializes the value for $s_{0}$ as start state to register $REG_{s_0}$. After every $k\text{th}$ clock cycle, an input sample is registered with a frequency $F_{s} = 1/T_{s}$, where $T_{s}$ is the sampling time required to store each observed sample. The hardware design strictly follows a discrete clock sensitivity, therefore we explain the notations used in the block diagram as time bounded blocks:
 
-\begin{itemize}
-    \item During $k$-th iteration, the observed state $REG_{s_k}$ would accumulate value for $s_{k}^{n}$, where $n$ represents the state index. Similarly, $a_{k}^{m}$ will be the $m$-th action taken in $k$-th iteration.
-    
-    \item The register $\mathbf{u}_{k}^{n}$ with length of $m$-bits indicates to enable or disable the value storage register for action-value update in $n$-th state done in $k$-th iteration.
-    
-    \item Reward $\mathbf{r}^{n}$ is derived from $2$-input LUT, which fetches signed binary reward from SRAM cells. The reward modes are -1, 0, and 1. As explicit as their numerical values, rewards are assigned based on success, transition, and failure criteria.
-    
-    \item At $k+1$ iteration, $n$-th future state can be defined as $s_{k+1}^{n}$, and the Q-update can be taken as $\max Q^{n}$ for $(k+1)$-th iteration.
-    
-    \item The entire Q function can be represented as a 2D register $\mathbf{Q}_{k}^{n}$ depicting $m$ action values in $n$-th state.
-    
-    \item The discount ($\gamma$) and learning ($\alpha$) rate are unsigned values stored in SRAM block. 
-\end{itemize}
+i- Using metastable circuit for assigning connection to nodes,
+\\ii- the readouts can be dynamically adjusted at circuit level,
+\\iii- which establish real-time update
 
-As shown in the fig. \ref{fig:update-and-compute}, the metastable stage \textbf{(MS)} block gets triggered with a random initial state distribution, which in turn generate action trajectories as bit sequences drawn as random events from a PDF. The action trajectory is indexed temporally, and is generated in clock cycles equal to the dimension of available actions. The action bits are post-processed in order to encode probabilities to actions, such that an action $a_k^z$ is:
-$$ a_k^z = P_1 \times a_{k-1}^z + P_2(\texttt{mod}(M)) $$
-where $a_k^z$ is an integer in range $(0, M)$, and $a_{k-1}^z$ is previous action drawn from metastable distribution. The coefficients $P_1$ and $P_2$ are constants that are updated at the end of each iteration. The actions are latched as FIFO sequence, and then sent to the update stage or \textbf{US} block. The US-block is a combinational block that determines which $(s_k^n, s_k^m)$ will be updated. It return a column vector $\mathbf{u_k^n}$: 
-$$
-\mathbf{u}_{k}^{n}=\left[\begin{array}{c}
-u_{k}^{n, 0} \\
-u_{k}^{n, 1} \\
-\vdots \\
-u_{k}^{n, M-1}
-\end{array}\right] \underset{M\times1}{\Bigg.} ,
-$$
 
-$$
-\mathbf{u}_{k}^{n}=\left\{\begin{array}{l}
-\left(1>>a_{k}^{z}\right) \| A^M \quad \text { if } s_{k}^{n}==n \\
-A^M
-\end{array} \right\}.
-$$
-where each unit $u_{k}^{n, z}$ is 1-bit flag that tells if any action matrix element needs to be updated. A logic high represents \textit{`must-update'}, and low represents \textit{`no-update'} requirements. At every iteration, only single action bit will signal as high for update. The update operation makes the column vector $\mathbf{u_k^n}$ right shift  $\text { if } s_{k}^{n}==n$. Moreover, if $u_k^{n, z}$ flag shows logic level high for an action $a_k^z$, the system also updates corresponding Q-value (state-action value) $Q_{k}(s_{k}^{n}, a_{k}^{m})$. Q-values are held in $N \times M$ registers during ongoing iteration. After $Q_{k}(s_{k}^{n}, a_{k}^{m})$ updates are done, the values for $k$-th time step are transported to a BRAM of size $4\times N \times M$. The allocation inside SRAM is done by assigning one $N \times M$ memory block to future state selection, thus for every $(s_{k}^{n}, a_{k}^{m})$ pair, we have 1-step look-ahead table always ready to predict $s_{k+1}^{n}$-th state. Another BRAM of identical size is used to store values $Q_{k}(\cdot, \cdot)$ for each $(s_{k}^{n}, a_{k}^{m})$ pair, followed by memory assignments for immediate reward $\mathbf{r}$, and finally last $N\times M$ BRAM resource is assigned to store binary selector bits for $M$ actions in $N$ states --- at this point, completing the single-pass of algorithm on hardware. The iterations stages carry on in recursive manner and one pass of input-output takes $4$-clock cycles, from meta-state observation to new value updates in the BRAM. With an internal clock speed of $100MHz$, it takes $40ns$ ($40\times10^{-9}$) for one inference iteration on hardware. The circuit shown in fig. \ref{fig:iteration} shows the cycle of iterations. Additionally, after the updates, the Meta-DNN block takes $\leq NXM$ (worst-case) clock ticks to generate new efficacy mapping for actions. (see fig. \ref{fig:meta-dnn-NN} and \ref{fig:meta-dnn-loop}). The number of clock ticks for Meta-DNN block can be reduced by carefully selecting sparsity level of the interconnects. However, there is no specific formulae to follow and the sparsity levels need to be determined according to the complexity of the problem.
-\\\color{red}\underline{Discussion on results: }\color{black} The results can be summarized into following evaluations:
-\begin{itemize}
-    \item Success plots to show that Meta-DNN accomplishes the task, comparable to standard fully connected ANN
-    
-    \item Wall-clock time comparison of each iteration in the system
-    
-    \item A trend for resources requirements with growth in state space
-\end{itemize}
 
+
+\color{green}
+\section{Experiments and Results} \label{results}
+1- Overview of system. Explain the schematic diagrams
+\\2- Table for resources and energy consumption
+\\3- Results: DQN (cartpole, inv-pendulum, mountain-car)
 
 \section{Conclusion} \label{conclusion}
-
-
-
-
-
+\color{black}
 % \bibliographystyle{ACM-Reference-Format}
 \bibliographystyle{unsrt}
 \bibliography{bibFile}
