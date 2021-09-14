@@ -316,7 +316,7 @@ Digitally identical to standard architecture of a neuron synapse, a unit neuron 
 
 \begin{figure*}
 \centering
-{\includegraphics[width=\linewidth]{./figs/plots.png}}
+{\includegraphics[width=\linewidth]{./figs/plot2.pdf}}
 \caption{Plots for Q-learning experiments}
 \label{fig:plots}
 \end{figure*}
@@ -402,6 +402,16 @@ To further validate the performance, we clocked each inference periods in terms 
 
 For testing the limits of our purposed methodology, we examined Meta-DNN and its baseline with incrementally growing state space size and varying sparsity of interconnects. The results of which are shown in table \ref{table:max-error}. Meta-DNN at sparsity level of $0\%$ have no sparsity at all, and theoretically it is a fully-connected network, where each neuron has direct link to its adjacent-layer neurons. The sparsity is set by increasing or decreasing the number count of PDL-LUTs in meta-circuit shown in fig. \ref{fig:tuning}. Sparsity of $0\%$ constitutes to number of PDLs equal to number of nodes in the network, hence it becomes identical representation of baseline with extra overhead of hardware. Similarly, higher sparsity percentage has lower resolution of interconnects and PDLs in the system. The table
 show distinctive performance evidence for Meta-DNN in higher dimensions, whereas the baseline method experienced synthesis time-out, resulting in failure. The failure runs are shown as \color{red}XX \color{black} in the table. Also, by observing the failure occurrence, we can correlate that growth in dimensionality impacts sub-linearly to performance of Met-DNN. thus making it viable enough to be considered for problems (like Q-learning itself) where scaling-up of space is common. 
+
+\begin{figure}
+\centering
+{\includegraphics[width=\linewidth]{./figs/histOnly.pdf}}
+\caption{Resource utilization (BRAM) with growing problem space}
+\label{fig:barplot}
+\end{figure}
+
+Along with minimum error rate validation, we also validate the scalability of Meta-DNN in terms of hardware resource utilization. The bar plot in fig. \ref{fig:barplot} illustrates that Meta-DNN manages to keep the BRAM requirements from growing exponentially. The $100\%$ utilization of BRAM indicates  invalid allocation of memory resource. With that given, the baseline did not passed the synthesis design after the problem space grew beyond $2^{26}$. The sparsity for each state space instance was kept at maximum while registering BRAM resource information. For example, for $2^{30}$, we used $45\%$ sparsity for Meta-DNN. It is interesting to note that Meta-DNN experienced synthesis failure for $2^{30}$ dimension. However, even after failing the synthesis design, it did not exhausted the BRAM resource entirely. That is mainly because of the LUT-based modular structure of Meta-circuit (see fig \ref{fig:iteration}), as it decentralizes the memory load per timestep due to layer multiplexing design. 
+
 
 \section{Conclusion} \label{conclusion}
 
